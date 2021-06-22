@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>osc.js Light Panel</title>
+        <meta charset="UTF-8" />
+        <style>
+          body {
+              background: black;
+          }
+          
+          #toolbar {
+              padding: 0.5em 0.5em 0.75em 0.5em;
+          }
+
+          #messageArea {
+              color: #fff;
+              background-color: #aaa;
+              border-radius: 10px;
+              padding-left: 0.75em;
+              padding-top: 0.1em;
+              height: 93%;
+              width: 98%;
+              display: none;
+          }
+
+          #udpStatus {
+              float: right;
+              font-size: 75%;
+              font-style: italic;
+              padding-top: 0.5em;
+          }
+
+          #messageLabel {
+              font-weight: bold;
+          }
+
+          #message {
+              font-family: monospace;
+              font-size: 148%;
+          }
+
+          button {
+              font-size: 150%;
+              border: none;
+              border-radius: 0.5em;
+              padding: 0.4em;
+              margin-bottom: 1em;
+              background-color: #333;
+              color: #fff;
+          }
+        </style>
+        
+        <script src="/node_modules/osc/dist/osc-browser.min.js"></script>
+        <script>
+          function toggle_visibility(id) {
+             var e = document.getElementById(id);
+             if(e.style.display == 'block')
+                e.style.display = 'none';
+             else
+                e.style.display = 'block';
+          }
+        </script>
+    </head>
+
+    <body>
+        <h1></h1>
+
+        <button onclick="toggle_visibility('messageArea')">Diagnostics</button>
+
+        <div id="messageArea">
+            <p id="messageLabel">OSC Message:</p>
+            <pre id="message"></pre>
+        </div>
+
+        <script>
+          const urlParams = new URLSearchParams(window.location.search);
+          const oscaddress = urlParams.get('address');
+          var oscPort = new osc.WebSocketPort({
+            url: "ws://" + window.location.host
+          });
+          this.oscPort.on("message", function (msg) {
+              console.log("message", msg);
+              document.getElementById("message").innerHTML = JSON.stringify(msg, null, '    ');
+              if (msg.address === oscaddress) {
+                document.body.style.backgroundColor = "rgb(" + msg.args[0] + "," + msg.args[1] + "," + msg.args[2] + ")";
+              }
+          });
+          this.oscPort.open();
+
+          // this.oscPort.socket.onmessage = function (e) {
+              // console.log("message", e);
+          // };
+          
+        </script>
+    </body>
+</html>

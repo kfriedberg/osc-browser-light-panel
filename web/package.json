@@ -1,0 +1,9 @@
+{
+    "name": "gl.osc.js-web-app",
+    "version": "1.0.1",
+    "browser": "index.html",
+    "ignore": [],
+    "dependencies": {
+        "osc": "2.4.0"
+    }
+}
